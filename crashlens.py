@@ -2,8 +2,8 @@ import argparse
 import re
 import sys
 import time
+import os
 
-# ANSI Terminal Colors for an enterprise feel
 class Colors:
     HEADER = '\033[95m'
     CYAN = '\033[96m'
@@ -13,7 +13,6 @@ class Colors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
 
-# The core failure signatures for AI infrastructure
 SIGNATURES = {
     "CUDA_OUT_OF_MEMORY": re.compile(r"CUDA out of memory|allocating.*bytes.*failed"),
     "NCCL_NETWORK_TIMEOUT": re.compile(r"Watchdog caught collective operation timeout|NCCL WARN"),
@@ -26,7 +25,6 @@ def analyze_log(file_path):
     print(f"\n{Colors.CYAN}{Colors.BOLD}===================================================={Colors.ENDC}")
     print(f"{Colors.CYAN}{Colors.BOLD}   ThermaCompute CrashLens - Log Triage Engine      {Colors.ENDC}")
     print(f"{Colors.CYAN}{Colors.BOLD}===================================================={Colors.ENDC}")
-    print(f"Scanning target: {file_path}...\n")
     
     findings = {key: [] for key in SIGNATURES.keys()}
     line_count = 0
@@ -47,37 +45,40 @@ def analyze_log(file_path):
     total_findings = sum(len(v) for v in findings.values())
 
     if total_findings == 0:
-        print(f"{Colors.GREEN}[+] Scan Complete.{Colors.ENDC} Analyzed {line_count} lines in {elapsed:.4f}s.")
-        print(f"{Colors.GREEN}[+] No critical hardware or framework signatures found.{Colors.ENDC}\n")
+        print(f"{Colors.GREEN}[+] Scan Complete. No critical signatures found.{Colors.ENDC}\n")
         return
 
+    # Terminal Output
     print(f"{Colors.FAIL}{Colors.BOLD}[!] CRITICAL FAILURES ISOLATED{Colors.ENDC}")
-    print(f"Analyzed {line_count} lines in {elapsed:.4f}s.\n")
-
     for sig, occurrences in findings.items():
         if occurrences:
             print(f"{Colors.WARNING}>> {sig} (Detected {len(occurrences)} times){Colors.ENDC}")
-            print(f"   First instance at Line {occurrences[0][0]}:")
-            print(f"   {Colors.FAIL}{occurrences[0][1][:150]}...{Colors.ENDC}\n")
-            
-    print(f"{Colors.CYAN}===================================================={Colors.ENDC}")
-    print(f"{Colors.BOLD}NEXT STEPS & RESOLUTION:{Colors.ENDC}")
+            print(f"   Line {occurrences[0][0]}: {Colors.FAIL}{occurrences[0][1][:120]}...{Colors.ENDC}\n")
+
+    # Generate Markdown Artifact
+    report_path = "crash_report.md"
+    with open(report_path, "w") as md:
+        md.write(f"# ThermaCompute CrashLens Report\n")
+        md.write(f"**Target:** `{os.path.basename(file_path)}` | **Lines Scanned:** `{line_count}`\n\n")
+        md.write("## Isolated Failures\n")
+        for sig, occurrences in findings.items():
+            if occurrences:
+                md.write(f"- **{sig}** (x{len(occurrences)})\n")
+                md.write(f"  - *First instance (Line {occurrences[0][0]}):* `{occurrences[0][1][:150]}`\n")
     
-    if findings["CUDA_OUT_OF_MEMORY"]:
-        print(" - OOM: Reduce vLLM batch size, lower MAX_MODEL_LEN, or check KV Cache allocation.")
-    if findings["NCCL_NETWORK_TIMEOUT"] or findings["NVLINK_FAILURE"]:
-        print(" - NETWORK/BUS: Verify node-to-node connectivity and NVLink health. A trailing worker is stalling the ring.")
-    
-    print(f"\n{Colors.HEADER}{Colors.BOLD}*** UPGRADE TO THE FULL $80 THERMAL AUDIT ***{Colors.ENDC}")
-    print("CrashLens tells you why the server died.")
-    print("The ThermaCompute $80 Audit tells you why your cluster is bleeding 20% of its capacity to heat.")
-    print("Zero production access required. We analyze your DCGM logs offline.")
-    print(f"{Colors.GREEN}Email: vivann.thermacompute@gmail.com to book your audit.{Colors.ENDC}")
-    print(f"{Colors.CYAN}===================================================={Colors.ENDC}\n")
+    print(f"{Colors.GREEN}[+] Generated shareable team report: {report_path}{Colors.ENDC}")
+
+    # Contextual Upsell - ONLY triggers if heat issues are found
+    if findings["THERMAL_THROTTLE_DETECTED"]:
+        print(f"\n{Colors.HEADER}{Colors.BOLD}*** THERMAL THROTTLING DETECTED ***{Colors.ENDC}")
+        print("CrashLens noticed your GPUs are dropping clocks due to heat.")
+        print("This is costing you compute capacity and increasing latency.")
+        print("Book our $80 GPU Efficiency Audit to get a 30-page forensic teardown.")
+        print(f"{Colors.GREEN}Email: vivann.thermacompute@gmail.com{Colors.ENDC}")
+        print(f"{Colors.CYAN}===================================================={Colors.ENDC}\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ThermaCompute CrashLens - Fast Inference Log Triage")
-    parser.add_argument("log_file", help="Path to the server log file (.txt or .log)")
+    parser.add_argument("log_file", help="Path to the server log file")
     args = parser.parse_args()
-    
     analyze_log(args.log_file)
