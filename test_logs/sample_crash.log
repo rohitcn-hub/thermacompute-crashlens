@@ -1,1 +1,8 @@
-
+2026-09-28 10:15:22 INFO [vllm.engine] Initializing vLLM inference engine...
+2026-09-28 10:15:24 INFO [vllm.worker] Loading model weights into VRAM...
+2026-09-28 10:15:28 INFO [vllm.core.scheduler] Starting request batching.
+2026-09-28 10:15:30 WARN [torch.distributed.nccl] NCCL WARN: Watchdog caught collective operation timeout
+2026-09-28 10:15:32 INFO [system.monitor] GPU 0 temperature exceeds 85C. HW Slowdown engaged.
+2026-09-28 10:15:35 ERROR RuntimeError: CUDA out of memory. Tried to allocate 4.00 GiB (GPU 0; 80.00 GiB total capacity; 74.50 GiB already allocated; 1.25 GiB free; 76.00 GiB reserved in total by PyTorch)
+2026-09-28 10:15:36 FATAL Worker (pid:4023) exited unexpectedly
+2026-09-28 10:15:36 INFO [vllm.engine] Shutting down cluster.
