@@ -63,3 +63,7 @@ Licensed under [MIT](LICENSE). This release builds on the earlier ThermaCompute 
 CrashLens remains free. If you also need a review of temperature, power and reported-throttling telemetry, email **vivaan.thermacompute@gmail.com** with your GPU model/count and CSV headers first.
 
 We confirm data suitability and scope before payment. The audit provides supported findings, prioritized checks and a PDF with assumptions and limitations. It does not guarantee savings or include production changes. An audit is not required to use CrashLens and does not commit you to a subscription.
+
+## Learn more
+
+[Walkthrough: from GPU crash logs to a reviewable report](docs/CRASHLENS-WALKTHROUGH.md).
