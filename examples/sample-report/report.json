@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "input_count": 1,
+  "lines_scanned": 5,
+  "ordering": "UTC timestamp order (clock synchronization unverified)",
+  "status": "matches_found",
+  "counts": {
+    "gpu_oom": 1,
+    "worker_exit": 1,
+    "nccl_timeout": 1
+  },
+  "events": [
+    {
+      "source": "input-1",
+      "line": 3,
+      "timestamp": "2026-09-28T10:00:04+00:00",
+      "rule": "gpu_oom",
+      "title": "GPU allocation failure reported",
+      "evidence": "2026-09-28T10:00:04Z worker=0 torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 512 MiB",
+      "next_check": "Inspect memory usage and allocation context on the affected worker; distinguish model loading, cache allocation and CUDA graph capture. Do not assume that reducing one flag fixes all OOMs."
+    },
+    {
+      "source": "input-1",
+      "line": 4,
+      "timestamp": "2026-09-28T10:00:05+00:00",
+      "rule": "worker_exit",
+      "title": "Worker or engine failure reported",
+      "evidence": "2026-09-28T10:00:05Z worker=0 Worker failed with error",
+      "next_check": "Find the underlying exception in this worker and its peers. This message may be a consequence rather than the initial error."
+    },
+    {
+      "source": "input-1",
+      "line": 5,
+      "timestamp": "2026-09-28T10:02:00+00:00",
+      "rule": "nccl_timeout",
+      "title": "Collective timeout reported",
+      "evidence": "2026-09-28T10:02:00Z worker=1 Watchdog caught collective operation timeout",
+      "next_check": "Inspect other ranks for earlier failures. The rank reporting a timeout is not necessarily the culprit. Consider existing PyTorch Flight Recorder evidence."
+    }
+  ],
+  "warnings": [
+    "Heuristic signature matches, not confirmed root causes or a health certificate.",
+    "Redaction is best effort. Review all output before sharing; paths, hostnames and other secrets may remain.",
+    "No-event results do not mean a healthy system. Only listed signatures are recognized.",
+    "Clock synchronization and log completeness cannot be verified from these files."
+  ]
+}

@@ -1,0 +1,5 @@
+SYNTHETIC FIXTURE: invented events for parser demonstration, not customer evidence.
+2026-09-28T10:00:00Z worker=0 INFO starting engine
+2026-09-28T10:00:04Z worker=0 torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 512 MiB
+2026-09-28T10:00:05Z worker=0 Worker failed with error
+2026-09-28T10:02:00Z worker=1 Watchdog caught collective operation timeout
