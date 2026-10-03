@@ -60,6 +60,8 @@ Licensed under [MIT](LICENSE). This release builds on the earlier ThermaCompute 
 
 ## Optional: $80 GPU Efficiency Audit
 
+[See the exact scope and request checklist](docs/thermal-audit.md) | [View a synthetic sample PDF](docs/ThermaCompute-Sample-Thermal-Audit.pdf). All sample measurements are invented. This is a one-time audit.
+
 CrashLens remains free. If you also need a review of temperature, power and reported-throttling telemetry, email **vivaan.thermacompute@gmail.com** with your GPU model/count and CSV headers first.
 
 We confirm data suitability and scope before payment. The audit provides supported findings, prioritized checks and a PDF with assumptions and limitations. It does not guarantee savings or include production changes. An audit is not required to use CrashLens and does not commit you to a subscription.
