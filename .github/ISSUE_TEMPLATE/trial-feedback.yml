@@ -1,0 +1,41 @@
+name: CrashLens trial feedback
+description: Tell us what worked, where you got stuck, or which next check was missing.
+title: "[Trial feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing CrashLens. Failed attempts are useful too.
+        Use the free synthetic demo; do not share production logs, credentials, prompts or customer data.
+        [Preview the report](https://github.com/rohitcn-hub/thermacompute-crashlens/blob/main/examples/sample-report/report.md) or [read the setup instructions](https://github.com/rohitcn-hub/thermacompute-crashlens#run-the-free-synthetic-demo).
+        GitHub submissions are public. You can instead email vivaan.thermacompute@gmail.com.
+  - type: dropdown
+    id: progress
+    attributes:
+      label: How far did you get?
+      options:
+        - I only previewed the sample report
+        - I tried the command but it failed
+        - The command finished but I could not open the HTML report
+        - I ran the command and opened the HTML report
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What helped, was missing, or stopped you?
+      description: One concrete example is enough. If nothing helped, please say so.
+      placeholder: "The next check was too generic because..."
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: OS and Python version (if you ran the demo)
+      placeholder: "Windows 11, Python 3.12"
+  - type: textarea
+    id: demo-error
+    attributes:
+      label: Optional synthetic-demo error
+      description: Review and remove identifying information before sharing. No production logs.
+      render: text
