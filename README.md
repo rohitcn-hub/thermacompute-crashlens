@@ -47,7 +47,7 @@ Double-click `report.html` in the `demo-report` folder to open it in your browse
 
 ### Tell us where you got to
 
-[Leave feedback in issue #2](https://github.com/rohitcn-hub/thermacompute-crashlens/issues/2) or email **vivaan.thermacompute@gmail.com**:
+[Use the short trial-feedback form](https://github.com/rohitcn-hub/thermacompute-crashlens/issues/new?template=trial-feedback.yml), [comment in issue #2](https://github.com/rohitcn-hub/thermacompute-crashlens/issues/2), or email **vivaan.thermacompute@gmail.com**:
 
 1. Did the command finish?
 2. Did you open `report.html`?
