@@ -6,7 +6,19 @@ CrashLens scans saved UTF-8 logs for known failure signatures and attaches sourc
 
 **Status: experimental 0.2.0.** Tested against synthetic fixtures; not validated across production fleets. It identifies text patterns, not confirmed root causes, and does not fix jobs or control hardware.
 
-## Try it in one minute
+## See the result before running anything
+
+**[Open the sample report](examples/sample-report/report.md)** — no installation or sign-up required. It uses [five lines of synthetic input](examples/synthetic.log), not customer data.
+
+| Evidence in this demo | Suggested next check |
+| --- | --- |
+| Line 3: CUDA out of memory | Inspect memory use in the affected worker. |
+| Line 4: worker failure | Inspect that worker's exception and peer logs. |
+| Line 5: collective timeout | Check earlier worker errors before treating the timeout as the cause. |
+
+These are three matched messages, not three proven root causes. Their order does not establish causation or prove a thermal problem. [Read the example investigation](docs/synthetic-walkthrough.md).
+
+## Run the free synthetic demo
 
 Requires Python 3.10 or newer.
 
@@ -18,7 +30,30 @@ python crashlens.py examples/synthetic.log --out demo-report
 
 Open `demo-report/report.html` locally. The same directory contains Markdown and JSON.
 [Preview the synthetic Markdown report](examples/sample-report/report.md).
-No real customer data is included in the demo.
+No real customer data is included in the demo. Expected terminal output:
+
+```text
+matches_found: 3 matches. Reports written locally. Review before sharing.
+```
+
+Double-click `report.html` in the `demo-report` folder to open it in your browser.
+
+### If the first run gets stuck
+
+- **Python command missing or too old:** check `python --version`. Use Python 3.10+. On macOS/Linux, try `python3`; on Windows, try `py -3` in place of `python`.
+- **No Git installed:** use GitHub's **Code → Download ZIP**, extract it, then open a terminal in the extracted folder.
+- **Output folder already exists:** run again with a new name, such as `--out demo-report-2`. Existing reports are deliberately not overwritten.
+- **No report found:** check the terminal for an error and confirm you ran the command from the folder containing `crashlens.py`.
+
+### Tell us where you got to
+
+[Leave feedback in issue #2](https://github.com/rohitcn-hub/thermacompute-crashlens/issues/2) or email **vivaan.thermacompute@gmail.com**:
+
+1. Did the command finish?
+2. Did you open `report.html`?
+3. Did it give you a useful next check? What was missing?
+
+If it failed, include your OS, Python version and the error from the **synthetic demo**. No production logs, GPU, account or payment are needed for this trial.
 
 For your own saved logs:
 
