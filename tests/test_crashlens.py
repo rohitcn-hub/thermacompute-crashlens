@@ -68,4 +68,21 @@ class ClassificationTests(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     main([str(source),'--out',d+'/out'])
 
+
+class SharedMemoryTests(unittest.TestCase):
+    def test_triton_shared_memory_is_not_vram_oom(self):
+        r=analyze(['triton.runtime.errors.OutOfResources: out of resource: shared memory, Required: 102400, Hardware limit: 101376.'])
+        self.assertEqual(r['counts'], {'triton_shared_memory':1})
+        self.assertEqual(r['events'][0]['line'],1)
+        self.assertIn('not evidence of exhausted GPU VRAM',r['events'][0]['next_check'])
+    def test_shared_memory_mentions_are_not_failures(self):
+        self.assertEqual(analyze(['INFO shared memory usage: 2048','OutOfResources: out of resource: tensor memory, Required: 640, Hardware limit: 512.'])['events'],[])
+    def test_multiline_signature_retains_evidence_line(self):
+        r=analyze(['INFO start\ntriton.compiler.OutOfResources: out of resource: shared memory,\nRequired: 102400, Hardware limit: 101376.'])
+        self.assertEqual(r['counts'], {'triton_shared_memory':1})
+        self.assertEqual(r['events'][0]['line'],2)
+    def test_vram_and_shared_memory_remain_distinct(self):
+        r=analyze(['CUDA out of memory\ntriton.runtime.errors.OutOfResources: out of resource: shared memory, Required: 8, Hardware limit: 4.'])
+        self.assertEqual(r['counts'], {'gpu_oom':1,'triton_shared_memory':1})
+
 if __name__=='__main__': unittest.main()
