@@ -1,0 +1,5 @@
+timestamp,gpu_id,temperature_c,power_w,thermal_throttle
+2026-10-01T10:00:00Z,gpu-a,70,400,0
+2026-10-01T10:00:10Z,gpu-a,75,420,1
+2026-10-01T10:00:00Z,gpu-b,65,390,0
+2026-10-01T10:00:10Z,gpu-b,66,395,0

@@ -112,3 +112,7 @@ We confirm data suitability and scope before payment. The audit provides support
 ## Learn more
 
 [Walkthrough: from GPU crash logs to a reviewable report](docs/CRASHLENS-WALKTHROUGH.md).
+
+## Experimental fleet telemetry assessment
+
+For GPU fleet operators: [run the read-only, multi-GPU CSV assessment](docs/fleet-assessment.md). Includes an invented two-GPU example, a normalized input contract and operator-pilot criteria. This is separate from log triage: no live collection, hardware control, lost-capacity calculation or production-scale validation.
