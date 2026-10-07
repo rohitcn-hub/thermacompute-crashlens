@@ -6,6 +6,14 @@ CrashLens scans saved UTF-8 logs for known failure signatures and attaches sourc
 
 **Status: experimental 0.2.0.** Tested against synthetic fixtures; not validated across production fleets. It identifies text patterns, not confirmed root causes, and does not fix jobs or control hardware.
 
+## Try CrashLens in your browser
+
+**[Open the interactive synthetic demo](https://crashlens-demo.rohitc-n474269.chatgpt.site)** — no Python, GPU or installation needed.
+
+Choose one of three invented examples, analyze it, select a finding to inspect its source line and suggested next check, and download the demo report. Includes an inconclusive example to show why no matches does not mean a healthy system.
+
+The browser demo accepts no uploads or custom logs. It runs fixed examples using the CLI's signature definitions; it is not the full CLI or evidence of production validation. Browser exploration and completed local CLI trials are separate.
+
 ## See the result before running anything
 
 **[Open the sample report](examples/sample-report/report.md)** — no installation or sign-up required. It uses [five lines of synthetic input](examples/synthetic.log), not customer data.
