@@ -7,7 +7,7 @@ The next validation target is one GPU fleet operator with a concrete thermal que
 Python 3.10+, no dependencies, GPU, account or upload:
 
 ```sh
-python fleet_assess.py examples/synthetic-fleet.csv --out fleet-report.json
+python fleet_assess.py examples/synthetic-fleet.csv --evidence-kind synthetic --out fleet-report.json
 ```
 
 Open the JSON file locally. Expected: two GPUs, one with an explicitly reported thermal-throttle sample. All example data is invented. Existing output files are never overwritten.
@@ -35,3 +35,35 @@ If suitable thermal telemetry exists, offer the separate [one-time $80 scoped au
 ## Progression toward control
 
 Read-only evidence → operator-reviewed recommendation → supervised test group → bounded controller with tested local limits, stale-command rejection and rollback → gradual fleet rollout. This prototype implements only the first step. It has not been benchmarked at thousands or millions of GPUs and makes no autonomous changes.
+
+## Evidence → recommendation → operator statement
+
+Schema version 2 creates a recommendation only for a GPU with explicit thermal-throttle samples. Each record contains CSV record numbers (header is record 1), the observed window, an unverified hypothesis, alternative explanations, missing workload context, a read-only correlation test, approval status and an initially untested outcome. Source bytes receive a SHA-256 fingerprint. Fingerprints link records; they do not establish authenticity or prevent tampering.
+
+Use `--evidence-kind synthetic` for invented input or `--evidence-kind operator_export` for an actual operator export. The default is `unspecified`; this is a user declaration, not automatic provenance verification. Even an operator export does not prove someone reviewed it.
+
+To record a review, save a local JSON feedback object. The following is an **invented example, not customer feedback**:
+
+```json
+{
+  "recommendation_id": "recommendation-1",
+  "reviewer": "SYNTHETIC EXAMPLE — not a real operator",
+  "decision": "needs_evidence",
+  "useful_or_missing_check": "Need workload throughput aligned with the flagged samples."
+}
+```
+
+```sh
+python fleet_assess.py --review fleet-report.json --feedback feedback.json --out review-001.json
+```
+
+Allowed decisions: `accepted_for_investigation`, `rejected`, `needs_evidence`, `tested`. A tested statement additionally requires a `result` (improved/worsened/unchanged/inconclusive) and nonempty `test_description`, `measurements`, and `learning` strings. Include metric units, baseline and observed values in measurements. These are operator-entered narrative records, not calculated performance comparisons. Acceptance of an investigation never grants permission to change hardware.
+
+Each review is a separate new file linked to the assessment fingerprint. The original assessment remains unchanged. Reports are local plaintext, not an authenticated or tamper-proof audit log; identity, authorization, measurement accuracy and causality are not independently verified. Review files are not ingested into training or shared between customers. No automatic model learning is implemented.
+
+## Next validation gates
+
+1. One real operator reviews a recommendation and names a useful or missing check. Record their actual response; a synthetic review does not satisfy this gate.
+2. Agree the normalized metric mapping and obtain sufficient authorized, local workload context. Raw production logs are not needed for initial scoping.
+3. Decide whether the question fits the $80 audit before offering or charging for it.
+4. Only after meaningful evidence exists, specify an operator-run experiment with a comparable baseline, one changed variable, metric and success threshold, stop conditions and rollback. None of these controls is implemented as an execution engine here.
