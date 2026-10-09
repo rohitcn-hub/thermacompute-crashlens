@@ -1,0 +1,3 @@
+# SYNTHETIC EXAMPLE — clocks and causation intentionally unverified
+2026-10-08T10:00:00Z job=demo-run rank=1 gpu=GPU-demo-1 INFO loading model
+2026-10-08T10:01:00Z job=demo-run rank=1 Watchdog caught collective operation timeout
