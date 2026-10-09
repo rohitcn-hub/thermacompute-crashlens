@@ -1,0 +1,4 @@
+# SYNTHETIC EXAMPLE — no customer data
+2026-10-08T10:00:00Z job=demo-run rank=0 gpu=GPU-demo-0 INFO loading model
+2026-10-08T10:00:04Z job=demo-run rank=0 gpu=GPU-demo-0 CUDA out of memory
+2026-10-08T10:00:05Z job=demo-run rank=0 Worker failed with error

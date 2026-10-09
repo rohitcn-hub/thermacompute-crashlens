@@ -4,7 +4,28 @@
 
 CrashLens scans saved UTF-8 logs for known failure signatures and attaches source line numbers and suggested next checks. It runs offline with Python's standard library: no account, API key, GPU, or production SSH access required.
 
-**Status: experimental 0.2.0.** Tested against synthetic fixtures; not validated across production fleets. It identifies text patterns, not confirmed root causes, and does not fix jobs or control hardware.
+**Status: experimental 0.3.0.** Tested against synthetic fixtures; not validated across production fleets. It identifies text patterns, not confirmed root causes, and does not fix jobs or control hardware.
+
+## Multi-worker investigation — new in 0.3.0
+
+```sh
+python crashlens.py examples/distributed --out distributed-report
+```
+
+Open `distributed-report/report.html`. The synthetic example contains three matched messages and one candidate cross-rank relationship. No GPU, account, network connection or extra package is needed.
+
+The report includes:
+
+- A concise investigation brief and prioritized checks linked to individual evidence cards.
+- A timeline with adjacent, best-effort-redacted source lines.
+- Explicit `job=`, `job_id=`, `rank=`, `[rank0]`, `gpu=` and `gpu_uuid=` identifiers. No identity is inferred from filenames or propagated across lines.
+- Candidate peer-failure-to-timeout relationships for the same explicit job label, different ranks and a preceding failure within 120 seconds. Only the nearest qualifying peer failure is linked. This is not verified causation, a measured stall or proof of the same job run/collective.
+- Source aliases and SHA-256 fingerprints of decoded input text; original filenames are not included in reports.
+- Self-contained HTML without scripts or external assets, plus Markdown and JSON (schema version 2).
+
+Folders include immediate `.log` and `.txt` files only, sorted by path; other extensions and symlinks are skipped. Explicit symlink inputs and duplicate files are rejected. Limits: 128 files, 20 MiB combined and 5,000 matches. Reports never overwrite existing output directories.
+
+Clock synchronization remains unverified. Missing/ambiguous job or rank IDs prevent correlation. Priorities are ordered by signature specificity, not a probability of root cause. Telemetry joins, baseline comparisons and financial estimates are not part of this release. The hosted browser demo remains the earlier fixed-example experience.
 
 ## Try CrashLens in your browser
 
@@ -88,7 +109,7 @@ The CLI makes no network requests, installs nothing, and changes no GPU settings
 
 Logs can contain prompts, secrets, paths or identifying information. Masking is incomplete: review reports before sharing. Output files are not encrypted and inherit your system's permissions. Do not upload production logs to public issues.
 
-Inputs are limited to 20 MiB combined and must be UTF-8 text. There is no multiline traceback reconstruction, job/rank correlation, automatic remediation, or verified root-cause inference. Repeated matches are occurrences, not unique incidents. No matches means **insufficient evidence**, not a healthy system.
+Inputs are limited to 20 MiB combined and must be UTF-8 text. There is no multiline traceback reconstruction, automatic remediation, or verified root-cause inference. Job/rank correlation is limited to explicit identifiers and the documented 120-second window. Repeated matches are occurrences, not unique incidents. No matches means **insufficient evidence**, not a healthy system.
 
 ## Verify and contribute
 
@@ -101,13 +122,11 @@ Please report missed signatures with a minimal synthetic example, expected resul
 
 Licensed under [MIT](LICENSE). This release builds on the earlier ThermaCompute Incident Lens preview; CrashLens is the public product name for this repository.
 
-## Optional: $80 GPU Efficiency Audit
+## Optional executive review
 
-[See the exact scope and request checklist](docs/thermal-audit.md) | [View a synthetic sample PDF](docs/ThermaCompute-Sample-Thermal-Audit.pdf). All sample measurements are invented. This is a one-time audit.
+CrashLens remains free and MIT licensed. The separate **$800 Executive Thermal Architecture Audit** provides a scoped review of agreed NVML/vLLM exports, evidence tables and a validation plan. Scope, delivery and data handling are agreed before payment. No guaranteed savings or production changes.
 
-CrashLens remains free. If you also need a review of temperature, power and reported-throttling telemetry, email **vivaan.thermacompute@gmail.com** with your GPU model/count and CSV headers first.
-
-We confirm data suitability and scope before payment. The audit provides supported findings, prioritized checks and a PDF with assumptions and limitations. It does not guarantee savings or include production changes. An audit is not required to use CrashLens and does not commit you to a subscription.
+[Executive audit details](https://thermacompute-ai.rohitc-n474269.chatgpt.site/#report).
 
 ## Learn more
 

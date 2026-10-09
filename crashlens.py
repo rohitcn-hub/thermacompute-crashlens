@@ -1,4 +1,4 @@
-"""CrashLens 0.2.0: offline, heuristic log triage. Python 3.10+."""
+"""CrashLens 0.3.0: offline, heuristic log triage. Python 3.10+."""
 import argparse
 import collections
 import datetime as dt
@@ -6,8 +6,9 @@ import html
 import json
 from pathlib import Path
 import re
+from investigation import enrich, investigation_markdown, render
 
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 MAX_BYTES = 20 * 1024 * 1024
 RULES = [
  ('gpu_oom', r'(?:CUDA out of memory|torch\.cuda\.OutOfMemoryError)', 'GPU allocation failure reported', 'Inspect memory usage and allocation context on the affected worker; distinguish model loading, cache allocation and CUDA graph capture. Do not assume that reducing one flag fixes all OOMs.'),
@@ -48,6 +49,8 @@ def analyze(texts):
             lines += 1
             for rule_id, pattern, title, next_check in RULES:
                 if pattern.search(line):
+                    if len(events) >= 5000:
+                        raise ValueError('More than 5000 matches; narrow the incident window.')
                     events.append(dict(source=f'input-{number}', line=line_no,
                         timestamp=timestamp(line), rule=rule_id, title=title,
                         evidence=redact(line)[:2000], next_check=next_check))
@@ -56,15 +59,16 @@ def analyze(texts):
                 'No-event results do not mean a healthy system. Only listed signatures are recognized.',
                 'Clock synchronization and log completeness cannot be verified from these files.']
     if events and all(e['timestamp'] for e in events):
-        events.sort(key=lambda e:e['timestamp'])
+        events.sort(key=lambda e:dt.datetime.fromisoformat(e['timestamp']))
         ordering = 'UTC timestamp order (clock synchronization unverified)'
     else:
         ordering = 'Input file and line order; global chronology unavailable'
         warnings.append('Some events lack full timezone-aware timestamps. No global ordering or root-cause inference performed.')
     counts = collections.Counter(e['rule'] for e in events)
-    return dict(version=VERSION, input_count=len(texts), lines_scanned=lines,
+    report = dict(version=VERSION, input_count=len(texts), lines_scanned=lines,
         ordering=ordering, status='matches_found' if events else 'insufficient_evidence',
         counts=dict(counts), events=events, warnings=warnings)
+    return enrich(report, texts, redact)
 
 def markdown(report):
     out = ['# ThermaCompute CrashLens', '', f"Version {VERSION} — local heuristic triage", '',
@@ -78,12 +82,10 @@ def markdown(report):
                 'Evidence:', '']
         out += ['    '+s for s in event['evidence'].splitlines()]
         out += ['', 'Next check: '+event['next_check']]
-    return '\n'.join(out)+'\n'
+    return investigation_markdown(report)+'\n'+'\n'.join(out)+'\n'
 
 def render_html(report):
-    # Escape every log byte; no JS, remote assets or external requests.
-    body = html.escape(markdown(report))
-    return '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'"><title>CrashLens report</title><style>body{background:#081421;color:#dce8f5;font:16px/1.65 system-ui;margin:0;padding:clamp(20px,5vw,70px)}main{max-width:1000px;margin:auto}header{color:#42d3e8;letter-spacing:.12em}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#102235;border:1px solid #26415b;border-radius:16px;padding:24px;font:14px/1.7 ui-monospace,monospace}@media print{body,pre{background:white;color:black}}</style><main><header>THERMACOMPUTE / CRASHLENS</header><h1>Evidence before assumptions.</h1><p>Offline report · no automatic fixes · review before sharing</p><pre>'''+body+'</pre></main></html>'
+    return render(report)
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
@@ -92,7 +94,19 @@ def main(argv=None):
     args = p.parse_args(argv)
     try:
         data, total = [], 0
-        for path in args.logs:
+        paths = []
+        for supplied in args.logs:
+            if supplied.is_symlink():
+                raise ValueError('Symlink inputs are unsupported.')
+            if supplied.is_dir():
+                paths.extend(sorted(p for p in supplied.iterdir() if p.suffix.lower() in {'.log','.txt'} and p.is_file() and not p.is_symlink()))
+            else:
+                paths.append(supplied)
+        if not paths or len(paths)>128:
+            raise ValueError('Supply between 1 and 128 log files; folders include only immediate .log/.txt files.')
+        if len({p.resolve() for p in paths}) != len(paths):
+            raise ValueError('Duplicate input files; supply each source once.')
+        for path in paths:
             if not path.is_file():
                 raise ValueError('Each input must be a regular file.')
             with path.open('rb') as stream:
@@ -111,6 +125,8 @@ def main(argv=None):
     except (OSError, UnicodeError, ValueError) as exc:
         p.exit(2, f'Input/output error: {exc}\n')
     print(f"{report['status']}: {len(report['events'])} matches. Reports written locally. Review before sharing.")
+    print(f"Investigation: {len(report['relationships'])} candidate relationships; clocks unverified.")
+    print(f"Open {args.out / 'report.html'}")
     return 0
 
 if __name__ == '__main__':
