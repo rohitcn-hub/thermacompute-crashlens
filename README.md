@@ -30,6 +30,8 @@ These are three matched messages, not three proven root causes. Their order does
 
 Requires Python 3.10 or newer.
 
+**Quickest CLI trial:** after downloading or cloning this repository, run `python demo.py`. No input file is needed. It runs the real analyzer on invented OOM/worker/timeout events, creates a fresh output folder and prints the HTML report location. Try `python demo.py --scenario thermal` or `python demo.py --scenario unknown` to explore the limits. All generated demo reports are labeled synthetic.
+
 ```sh
 git clone https://github.com/rohitcn-hub/thermacompute-crashlens.git
 cd thermacompute-crashlens
@@ -101,13 +103,15 @@ Please report missed signatures with a minimal synthetic example, expected resul
 
 Licensed under [MIT](LICENSE). This release builds on the earlier ThermaCompute Incident Lens preview; CrashLens is the public product name for this repository.
 
-## Optional: $80 GPU Efficiency Audit
+## Optional: $800 Executive Thermal Architecture Audit
 
-[See the exact scope and request checklist](docs/thermal-audit.md) | [View a synthetic sample PDF](docs/ThermaCompute-Sample-Thermal-Audit.pdf). All sample measurements are invented. This is a one-time audit.
+**One workload. A clear evidence trail. A prioritized plan your engineers can test.**
 
-CrashLens remains free. If you also need a review of temperature, power and reported-throttling telemetry, email **vivaan.thermacompute@gmail.com** with your GPU model/count and CSV headers first.
+CrashLens remains free and open source. The **$800 one-time audit** reviews suitable NVML/vLLM exports for one agreed workload or GPU cohort and time window. Deliverables: a PDF with supported findings, data-quality limitations, explicit uncertainties, and prioritized recommendations for testing. A findings walkthrough is included, with timing agreed before payment.
 
-We confirm data suitability and scope before payment. The audit provides supported findings, prioritized checks and a PDF with assumptions and limitations. It does not guarantee savings or include production changes. An audit is not required to use CrashLens and does not commit you to a subscription.
+[Read the scope and suitability checklist](docs/thermal-audit.md). Email **vivaan.thermacompute@gmail.com** with your GPU model/count, investigation question and telemetry column headers first—not private logs. We agree scope, data handling, delivery timing and payment instructions before any transfer or payment.
+
+No infrastructure changes, guaranteed savings, or subscription commitment. This offer replaces the earlier $80 audit.
 
 ## Learn more
 
