@@ -1,25 +1,38 @@
-# ThermaCompute $80 thermal audit
+# $800 Executive Thermal Architecture Audit
 
-Unexplained throttling deserves an evidence-based review before you spend more on hardware.
+**One workload. A clear evidence trail. A prioritized plan your engineers can test.**
 
-## What $80 buys
+For infrastructure leaders investigating unexplained GPU performance variance. A one-time, agreed-scope diagnostic review—not an annual subscription.
 
-An agreed-scope review of exported temperature, power and reported-throttling telemetry; supported findings; prioritized next checks; and a PDF with data-quality notes and explicit assumptions. A findings walkthrough is included, with format and timing agreed before payment. This is a one-time audit, not an annual plan or recurring subscription.
+## The scope
 
-[View the synthetic sample PDF](ThermaCompute-Sample-Thermal-Audit.pdf). All measurements are invented. The sample illustrates the deliverable; it is not customer evidence or a savings claim.
+One workload or GPU cohort and one agreed time window, using suitable NVML/vLLM exports. We first check whether the available telemetry can answer your question. If it cannot, we explain the missing evidence before accepting payment.
+
+## What you receive
+
+- An executive PDF summarizing what the evidence supports, what remains unknown, and the next decision.
+- Findings tied to the supplied metrics, timestamps and observation window.
+- Explicit data-quality limitations, assumptions and alternative explanations.
+- Prioritized recommendations your engineers can test, with the measurements needed to evaluate the result.
+- A findings walkthrough; format and delivery timing agreed before payment.
+
+High temperature alone does not establish throttling. Reported throttling alone does not quantify lost throughput. Financial estimates require an agreed baseline, workload performance evidence and your cost assumptions; they are not guaranteed savings.
 
 ## Request a suitability check
 
-Email **AUDIT** to **vivaan.thermacompute@gmail.com**, with:
+Email **vivaan.thermacompute@gmail.com** with:
 
 - GPU model and count.
-- The question you want answered.
-- Telemetry CSV column headers, units, sampling interval and available time window.
+- The specific performance question.
+- Available telemetry column headers, units, sampling interval and time window.
+- Whether workload throughput or latency measurements are available for that same window.
 
-Send headers first, not sensitive files. We confirm data suitability, the covered scope, delivery date and payment instructions before payment. Data transfer and handling are agreed separately. No working public checkout has been verified; do not pay an unconfirmed link.
+Send headers first, not sensitive files. Scope, data handling, delivery date and payment instructions are agreed before payment or data transfer. No public checkout or secure upload endpoint is currently advertised here.
 
-## CrashLens versus the audit
+## Free CrashLens versus the audit
 
-CrashLens remains free: local saved-log signature matching, evidence lines and suggested investigation steps. The $80 audit reviews thermal telemetry over an agreed observation window. It does not identify every system flaw, certify safety, promise recovered capacity or change production systems.
+CrashLens provides local saved-log signature matching, source lines and suggested checks. Try `python demo.py` with synthetic data and no GPU. The audit is a separate human-reviewed investigation of suitable telemetry for an agreed question.
 
-Any wider pilot or future enterprise service is discussed separately. Trying CrashLens or buying this audit creates no subscription commitment.
+The audit does not certify hardware safety, identify every system flaw, prove hardware lifetime, change production systems, or guarantee recovered capacity. No subscription is required.
+
+This $800 offer replaces the earlier $80 audit. Historical synthetic examples are illustrative only and are not customer results or promises of deliverables beyond this agreed scope.
